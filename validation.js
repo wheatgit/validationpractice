@@ -24,3 +24,8 @@ function validatePasswordStrength(password) {
     
     return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
 }
+
+// Password match validation function
+function validatePasswordMatch(password, confirmation) {
+    return password === confirmation;
+}
