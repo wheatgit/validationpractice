@@ -198,4 +198,42 @@ class FormManager {
             this.submitBtn.classList.add('disabled');
         }
     }
+    
+    setupEventListeners() {
+        // Add input and blur listeners to all fields
+        for (const [fieldName, validator] of this.validators) {
+            validator.field.addEventListener('input', () => {
+                validator.validate();
+                this.validatePasswordMatch();
+                this.updateSubmitButton();
+            });
+            
+            validator.field.addEventListener('blur', () => {
+                validator.validate();
+                this.validatePasswordMatch();
+                this.updateSubmitButton();
+            });
+        }
+        
+        // Country change - revalidate postal code
+        document.getElementById('country').addEventListener('change', () => {
+            this.validators.get('postalCode').validate();
+            this.validatePasswordMatch();
+            this.updateSubmitButton();
+        });
+    }
+    
+    validatePasswordMatch() {
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('passwordConfirm').value;
+        const passwordConfirmValidator = this.validators.get('passwordConfirm');
+        
+        if (passwordConfirm && password !== passwordConfirm) {
+            passwordConfirmValidator.isValid = false;
+            passwordConfirmValidator.updateUI(ErrorMessages.passwordMatch);
+        } else if (passwordConfirm) {
+            passwordConfirmValidator.isValid = true;
+            passwordConfirmValidator.updateUI('');
+        }
+    }
 }
