@@ -72,3 +72,77 @@ const ErrorMessages = {
         return formats[country] || 'Enter a valid postal code';
     }
 };
+
+
+class FieldValidator {
+    constructor(fieldId, rules) {
+        this.field = document.getElementById(fieldId);
+        this.errorElement = document.getElementById(`${fieldId}-error`);
+        this.rules = rules;
+        this.isValid = false;
+    }
+    
+    validate() {
+        const value = this.field.value;
+        let isValid = true;
+        let errorMessage = '';
+        
+        // Check required first
+        if (this.rules.includes('required') && !validateRequired(value)) {
+            isValid = false;
+            errorMessage = ErrorMessages.required;
+        } else if (value.trim()) {
+            // Only validate other rules if field is not empty
+            for (const rule of this.rules) {
+                if (rule === 'required') continue;
+                
+                let ruleValid = true;
+                switch (rule) {
+                    case 'email':
+                        ruleValid = validateEmail(value);
+                        if (!ruleValid) errorMessage = ErrorMessages.email;
+                        break;
+                    case 'passwordStrength':
+                        ruleValid = validatePasswordStrength(value);
+                        if (!ruleValid) errorMessage = ErrorMessages.passwordStrength;
+                        break;
+                    case 'postalCode':
+                        const country = document.getElementById('country').value;
+                        ruleValid = validatePostalCode(value, country);
+                        if (!ruleValid) errorMessage = ErrorMessages.postalCode(country);
+                        break;
+                }
+                
+                if (!ruleValid) {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        
+        this.isValid = isValid;
+        this.updateUI(errorMessage);
+        return isValid;
+    }
+    
+    updateUI(errorMessage) {
+        if (this.isValid) {
+            this.field.classList.remove('error');
+            this.field.classList.add('valid');
+            this.errorElement.textContent = '';
+            this.errorElement.style.display = 'none';
+        } else {
+            this.field.classList.remove('valid');
+            this.field.classList.add('error');
+            this.errorElement.textContent = errorMessage;
+            this.errorElement.style.display = 'block';
+        }
+    }
+    
+    clearValidation() {
+        this.field.classList.remove('error', 'valid');
+        this.errorElement.textContent = '';
+        this.errorElement.style.display = 'none';
+        this.isValid = false;
+    }
+}
