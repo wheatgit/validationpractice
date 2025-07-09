@@ -29,3 +29,23 @@ function validatePasswordStrength(password) {
 function validatePasswordMatch(password, confirmation) {
     return password === confirmation;
 }
+
+// Postal code validation function
+function validatePostalCode(postalCode, country) {
+    if (!postalCode.trim()) return false;
+    
+    const patterns = {
+        'US': /^\d{5}(-\d{4})?$/,
+        'CA': /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/,
+        'UK': /^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/i,
+        'AU': /^\d{4}$/,
+        'DE': /^\d{5}$/,
+        'FR': /^\d{5}$/,
+        'JP': /^\d{3}-\d{4}$/,
+        'BR': /^\d{5}-\d{3}$/,
+        'IN': /^\d{6}$/,
+        'MX': /^\d{5}$/
+    };
+    
+    return patterns[country] ? patterns[country].test(postalCode) : true;
+}
