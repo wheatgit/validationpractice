@@ -184,20 +184,11 @@ class FormManager {
         }
         
         this.isFormValid = allValid;
-        this.updateSubmitButton();
         
         return this.isFormValid;
     }
     
-    updateSubmitButton() {
-        if (this.isFormValid) {
-            this.submitBtn.disabled = false;
-            this.submitBtn.classList.remove('disabled');
-        } else {
-            this.submitBtn.disabled = true;
-            this.submitBtn.classList.add('disabled');
-        }
-    }
+
     
     setupEventListeners() {
         // Add input and blur listeners to all fields
@@ -205,13 +196,11 @@ class FormManager {
             validator.field.addEventListener('input', () => {
                 validator.validate();
                 this.validatePasswordMatch();
-                this.updateSubmitButton();
             });
             
             validator.field.addEventListener('blur', () => {
                 validator.validate();
                 this.validatePasswordMatch();
-                this.updateSubmitButton();
             });
         }
         
@@ -219,7 +208,6 @@ class FormManager {
         document.getElementById('country').addEventListener('change', () => {
             this.validators.get('postalCode').validate();
             this.validatePasswordMatch();
-            this.updateSubmitButton();
         });
     }
     
@@ -240,15 +228,23 @@ class FormManager {
     handleSubmit(e) {
         e.preventDefault();
         
-        if (this.validateAll()) {
+        // Validate all fields and show any errors
+        const isValid = this.validateAll();
+        
+        if (isValid) {
             console.log('Form submitted successfully!');
-            alert('Form submitted successfully!');
+            alert('Form submitted successfully! High five!');
             
             // Reset form
             this.form.reset();
             this.resetValidations();
         } else {
             console.log('Form has validation errors');
+            // Scroll to first error
+            const firstError = document.querySelector('.error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
     }
     
@@ -257,7 +253,6 @@ class FormManager {
             validator.clearValidation();
         }
         this.isFormValid = false;
-        this.updateSubmitButton();
     }
 }
 
