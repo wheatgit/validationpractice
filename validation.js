@@ -236,4 +236,36 @@ class FormManager {
             passwordConfirmValidator.updateUI('');
         }
     }
+    
+    handleSubmit(e) {
+        e.preventDefault();
+        
+        if (this.validateAll()) {
+            console.log('Form submitted successfully!');
+            alert('Form submitted successfully!');
+            
+            // Reset form
+            this.form.reset();
+            this.resetValidations();
+        } else {
+            console.log('Form has validation errors');
+        }
+    }
+    
+    resetValidations() {
+        for (const validator of this.validators.values()) {
+            validator.clearValidation();
+        }
+        this.isFormValid = false;
+        this.updateSubmitButton();
+    }
 }
+
+// Initialize form when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const formManager = new FormManager();
+    formManager.setupEventListeners();
+    
+    // Add form submit listener
+    formManager.form.addEventListener('submit', (e) => formManager.handleSubmit(e));
+});
