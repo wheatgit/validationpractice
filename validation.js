@@ -49,3 +49,26 @@ function validatePostalCode(postalCode, country) {
     
     return patterns[country] ? patterns[country].test(postalCode) : true;
 }
+
+// Error messages
+const ErrorMessages = {
+    required: 'This field is required',
+    email: 'Please enter a valid email address',
+    passwordStrength: 'Password must be at least 8 characters with uppercase, lowercase, and number',
+    passwordMatch: 'Passwords do not match',
+    postalCode: (country) => {
+        const formats = {
+            'US': 'Enter a valid US ZIP code (e.g., 12345 or 12345-6789)',
+            'CA': 'Enter a valid Canadian postal code (e.g., A1A 1A1)',
+            'UK': 'Enter a valid UK postcode (e.g., SW1A 1AA)',
+            'AU': 'Enter a valid Australian postcode (e.g., 2000)',
+            'DE': 'Enter a valid German postal code (e.g., 12345)',
+            'FR': 'Enter a valid French postal code (e.g., 75001)',
+            'JP': 'Enter a valid Japanese postal code (e.g., 123-4567)',
+            'BR': 'Enter a valid Brazilian postal code (e.g., 12345-678)',
+            'IN': 'Enter a valid Indian postal code (e.g., 123456)',
+            'MX': 'Enter a valid Mexican postal code (e.g., 12345)'
+        };
+        return formats[country] || 'Enter a valid postal code';
+    }
+};
