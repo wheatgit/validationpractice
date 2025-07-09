@@ -146,3 +146,56 @@ class FieldValidator {
         this.isValid = false;
     }
 }
+
+// Form manager class
+class FormManager {
+    constructor() {
+        this.form = document.getElementById('registrationForm');
+        this.submitBtn = document.getElementById('submitBtn');
+        this.validators = new Map();
+        this.isFormValid = false;
+        
+        this.initializeValidators();
+    }
+    
+    initializeValidators() {
+        // Email validator
+        this.validators.set('email', new FieldValidator('email', ['required', 'email']));
+        
+        // Country validator
+        this.validators.set('country', new FieldValidator('country', ['required']));
+        
+        // Postal code validator
+        this.validators.set('postalCode', new FieldValidator('postalCode', ['required', 'postalCode']));
+        
+        // Password validator
+        this.validators.set('password', new FieldValidator('password', ['required', 'passwordStrength']));
+        
+        // Password confirmation validator
+        this.validators.set('passwordConfirm', new FieldValidator('passwordConfirm', ['required']));
+    }
+    
+    validateAll() {
+        let allValid = true;
+        
+        for (const [fieldName, validator] of this.validators) {
+            const isValid = validator.validate();
+            if (!isValid) allValid = false;
+        }
+        
+        this.isFormValid = allValid;
+        this.updateSubmitButton();
+        
+        return this.isFormValid;
+    }
+    
+    updateSubmitButton() {
+        if (this.isFormValid) {
+            this.submitBtn.disabled = false;
+            this.submitBtn.classList.remove('disabled');
+        } else {
+            this.submitBtn.disabled = true;
+            this.submitBtn.classList.add('disabled');
+        }
+    }
+}
